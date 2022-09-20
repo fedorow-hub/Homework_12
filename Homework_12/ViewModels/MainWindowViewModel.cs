@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
+using System.IO;
+using System.Windows.Controls;
 
 namespace Homework_12.ViewModels
 {
@@ -31,11 +33,15 @@ namespace Homework_12.ViewModels
         }
         #endregion
 
+        public Action UpdateClientsList;
+
+        public Action UpdateDepartmentList;
+
         public Bank Bank { get; private set; }
 
         public Worker Worker { get; private set; }
 
-        public Action UpdateClientsList;
+        //public Action UpdateClientsList;
 
         private ObservableCollection<Client> clients;
 
@@ -43,6 +49,19 @@ namespace Homework_12.ViewModels
         {
             get => clients;
             set => Set(ref clients, value);
+        }
+
+        private List<Department> departments;
+
+        public List<Department> Departments
+        {
+            get => departments;
+            set => Set(ref departments, value);
+        }
+
+        public MainWindowViewModel()
+        {
+
         }
 
         public MainWindowViewModel(Worker worker)
@@ -53,10 +72,15 @@ namespace Homework_12.ViewModels
 
             Clients = new ObservableCollection<Client>();
 
+            //Departments = new ObservableCollection<Department>();
+
+            Departments = (List<Department>)Bank.DepartmentRepository.Departments;
+
             //#region commands
             //DeleteClientCommand = new LambdaCommand(OnDeleteClientCommandExecute, CanDeleteClientCommandExecute);
             OutLoggingCommand = new LambdaCommand(OnOutLoggingCommandExecute, CanOutLoggingCommandExecute);
             AddClientCommand = new LambdaCommand(OnAddClientCommandExecute, CanAddClientCommandExecute);
+            AddDepartmentCommand = new LambdaCommand(OnAddDepartmentCommandExecute, CanAddDepartmentCommandExecute);
             //EditClientCommand = new LambdaCommand(OnEditClientCommandExecute, CanEditClientCommandExecute);
             //#endregion
 
@@ -67,6 +91,10 @@ namespace Homework_12.ViewModels
             //UpdateClientsList += UpdateClients;
             //UpdateClientsList.Invoke();
         }
+
+        
+
+        
 
         #region Команды
         #region OutLoggingCommand
@@ -106,6 +134,58 @@ namespace Homework_12.ViewModels
 
         #endregion
 
+        #region AddDepartmentCommand
+
+        public ICommand AddDepartmentCommand { get; }
+
+        private bool CanAddDepartmentCommandExecute(object p)
+        {
+            if (_enableAddClient == true)
+                return true;
+            else return false;
+        }
+        private void OnAddDepartmentCommandExecute(object p)
+        {
+            DeparimentInfoWindow infoWindow = new DeparimentInfoWindow();
+            if (p is TreeView treeView)
+            {                
+                DepartmentInfoViewModel viewModel = new DepartmentInfoViewModel(new Department(), 
+                    (Department)treeView.SelectedItem, Bank);
+                infoWindow.DataContext = viewModel;
+                infoWindow.Show();
+            }   
+        }
+        #endregion
+
+        #endregion
+
+        #region SelectedClient
+
+        private Client _SelectedClient;
+        /// <summary>
+        /// Выбранный клиент
+        /// </summary>
+        public Client SelectedClient
+        {
+            get { return _SelectedClient; }
+            set => Set(ref _SelectedClient, value);
+        }
+        #endregion
+
+        #region SelectedDepartment
+
+        private Department _SelectedDepartment;
+        /// <summary>
+        /// Выбранный клиент
+        /// </summary>
+        public Department SelectedDepartment
+        {
+            get { return _SelectedDepartment; }
+            set => Set(ref _SelectedDepartment, value);            
+        }
+        #endregion
+
+
         #region EnableAddClient
         private bool _enableAddClient;
         public bool EnableAddClient
@@ -132,6 +212,6 @@ namespace Homework_12.ViewModels
             set => Set(ref _enableEditClient, value);
         }
         #endregion
-        #endregion
+        
     }
 }

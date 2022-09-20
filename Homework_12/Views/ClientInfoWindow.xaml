@@ -37,7 +37,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Фамилия:" Margin="10,0" FontSize="20" Foreground="Gray"/>
-            <Border Grid.Row="0" Grid.Column="1" Margin="0,5" Style="{StaticResource BorderToTextBox}" BorderBrush="{Binding BorderLastName, Converter={StaticResource InputValueValidationConvertor}}">
+            <Border Grid.Row="0" Grid.Column="1" Margin="0,5" Style="{StaticResource BorderToTextBox}" 
+                    BorderBrush="{Binding BorderLastName, Converter={StaticResource InputValueValidationConvertor}}">
                 <TextBox Width="450" Cursor="Arrow" FontSize="18"  
                      Text="{Binding Lastname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      IsEnabled="{Binding EnableLastName}"/>

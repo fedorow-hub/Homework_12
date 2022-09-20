@@ -39,6 +39,8 @@ namespace Homework_12.ViewModels
         }
         private bool CanSetManagerModeExecute(object p) => true;
 
+        #endregion
+
         #region OutCommand
         public ICommand OutCommand { get; }
         private void OnOutCommandExecuted(object p)
@@ -47,7 +49,7 @@ namespace Homework_12.ViewModels
         }
         private bool CanOutCommandExecute(object p) => true;
         #endregion
-        #endregion
+        
 
         private void OpenMainWindow(Worker worker, object p)
         {

@@ -18,9 +18,14 @@ namespace Homework_12.Models.Department
         /// </summary>
         private static int Id;
 
+        /// <summary>
+        /// ID отдела
+        /// </summary>
+        private static int depId;
         static DepartmentRepository()
         {
             Id = 0;
+            depId = 0;
         }
 
         /// <summary>
@@ -29,11 +34,17 @@ namespace Homework_12.Models.Department
         /// <returns></returns>
         private static int NextId() => ++Id;
 
+        /// <summary>
+        /// Получение следующего свободного идентификатора отдела
+        /// </summary>
+        /// <returns></returns>
+        private static int NextDepId() => ++depId;
+
         private List<Department>? _departments;
         public List<Department>? Departments => _departments;
 
         private List<Client.Client>? _clients;
-        public List<Client.Client>? Clients => _clients;
+        public List<Client.Client>? Clients => _clients;        
 
         /// <summary>
         /// Файл репозитория
@@ -54,7 +65,7 @@ namespace Homework_12.Models.Department
             }
             // если файл не существует, создаем новый пустой репозиторий
             File.Create(_path);
-            NoClientsForLoad();
+            NoDepartmentsForLoad();
         }
 
         /// <summary>
@@ -82,8 +93,32 @@ namespace Homework_12.Models.Department
         public void InsertDepartment(Department parentDepartment, Department childDepartment)
         {
             if (childDepartment is null)
-                return;
-            parentDepartment.departments.Add(childDepartment);
+                return;            
+            childDepartment.Id = NextDepId();
+            if(parentDepartment == null)
+            {
+                _departments.Add(childDepartment);
+            }
+            else
+            {
+                parentDepartment.departments.Add(childDepartment);
+            }                      
+            Save();
+        }
+
+        /// <summary>
+        /// Редактирование названия отдела
+        /// </summary>
+        /// <param name="parentDepartment"></param>
+        /// <param name="childDepartment"></param>
+        public void UpdateDepartment(Department department)
+        {
+            if (!_departments.Any(c => c.Id == department.Id))
+            {
+                throw new ArgumentOutOfRangeException(nameof(department), "Такого объекта нет в списке");
+            }
+
+            _departments[_departments.IndexOf(_departments.First(c => c.Id == department.Id))] = department;
             Save();
         }
 
@@ -130,6 +165,7 @@ namespace Homework_12.Models.Department
             string json = JsonSerializer.Serialize(_departments);
             File.WriteAllText(_path, json);
         }
+               
 
         /// <summary>
         /// Загрузка списка отделов
@@ -139,17 +175,17 @@ namespace Homework_12.Models.Department
             string data = File.ReadAllText(_path);
             if (string.IsNullOrEmpty(data))
             {
-                NoClientsForLoad();
+                NoDepartmentsForLoad();
                 return;
             }
             _departments = JsonSerializer.Deserialize<List<Department>>(data, new JsonSerializerOptions()
             {
-                PropertyNameCaseInsensitive = true
+                //PropertyNameCaseInsensitive = true
             });
 
             if (_departments is null)
             {
-                NoClientsForLoad();
+                NoDepartmentsForLoad();
                 return;
             }            
         }
@@ -157,7 +193,7 @@ namespace Homework_12.Models.Department
         /// <summary>
         /// Обработка ситуации, когда не возможно загрузить отделы
         /// </summary>
-        private void NoClientsForLoad()
+        private void NoDepartmentsForLoad()
         {
             _departments = new List<Department>();            
         }

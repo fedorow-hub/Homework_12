@@ -1,0 +1,47 @@
+﻿<Window x:Class="Homework_12.Views.DeparimentInfoWindow"
+        x:Name="DepartmentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Homework_12.Views" 
+        xmlns:c="clr-namespace:Homework_12.Infrastructure.Convertors"
+        xmlns:vm="clr-namespace:Homework_12.ViewModels" 
+        mc:Ignorable="d"
+        Title="DeparimentInfoWindow" Height="270" Width="800"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <vm:DepartmentInfoViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <c:InputValueValidationConvertor x:Key="InputValueValidationConvertor" />
+    </Window.Resources>
+    <DockPanel>
+        <DockPanel.Resources>
+            <Style x:Key="BorderToTextBox" TargetType="{x:Type Border}">
+                <Setter Property="CornerRadius" Value="5"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="MinHeight" Value="35"/>
+            </Style>
+        </DockPanel.Resources>
+        <DockPanel Height="50" HorizontalAlignment="Center" DockPanel.Dock="Top" Margin="0,60">
+            <TextBlock Text="Введите имя создаваемого отдела" VerticalAlignment="Center" FontSize="20" Margin="5,0"/>
+
+            <Border Grid.Row="0" Grid.Column="1" Margin="0,5" Style="{StaticResource BorderToTextBox}" 
+                    BorderBrush="{Binding BorderNameDepartment, Converter={StaticResource InputValueValidationConvertor}}">
+                <TextBox Text="{Binding NameDepartment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400" VerticalAlignment="Center" FontSize="20" Margin="5,0"/>
+            </Border>
+
+            
+        </DockPanel>
+        <DockPanel Height="60" Width="430">            
+            <Button Content="Сохранить" IsEnabled="{Binding EnableSaveDepartment}" Width="200"
+                    Command="{Binding SaveDepartmentCommand}"                    
+                    CommandParameter="{Binding ElementName=DepartmentWindow}" Cursor="Hand"/>
+            <Button Content="Отмена" Command="{Binding OutDepartmentCommand}" Width="200"
+                    CommandParameter="{Binding ElementName=DepartmentWindow}" Cursor="Hand"/>
+           
+
+        </DockPanel>
+    </DockPanel>
+</Window>

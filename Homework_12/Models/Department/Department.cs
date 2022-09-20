@@ -9,6 +9,8 @@ namespace Homework_12.Models.Department
     public class Department
     {
         #region Поля
+
+        private int id;
         /// <summary>
         /// Наименование отдела
         /// </summary>
@@ -37,9 +39,7 @@ namespace Homework_12.Models.Department
             this.name = Name;
             this.clients = new List<Client.Client>();            
             this.departments = new List<Department>();
-        }
-
-        
+        }        
 
         /// <summary>
         /// метод добавления отдела в структуру вышестоящего отдела
@@ -49,9 +49,7 @@ namespace Homework_12.Models.Department
         public void AddDepartment(Department dep, string name)
         {
             dep.departments.Add(new Department(name));
-        }
-
-        
+        }        
 
         /// <summary>
         /// Методо добавления клиента
@@ -79,6 +77,8 @@ namespace Homework_12.Models.Department
         /// Наименование департамента
         /// </summary>
         public string Name { get { return this.name; } set { this.name = value; } }
+
+        public int Id { get { return id; } set { id = value; } }
 
         #endregion
     }

@@ -5,10 +5,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Homework_12"
-        xmlns:fa="http://schemas.fontawesome.com/icons/" 
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:vm="clr-namespace:Homework_12.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="464" Width="800" WindowStartupLocation="CenterScreen"
+        Title="{Binding Title}" Height="464" Width="800" WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
+    
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="380" >
             <Grid.ColumnDefinitions>
@@ -17,42 +19,64 @@
             </Grid.ColumnDefinitions>
             <GroupBox Header="Отделы" Margin="5,0">
                 <StackPanel>
-                    <TreeView Height="178" Background="Aqua" Width="200" />
+                    <TreeView x:Name="DepartmentsList" Height="178" Width="200" 
+                              ItemsSource="{Binding Departments}">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding departments}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                    <!--<ListBox Height="178" Width="200" 
+                              ItemsSource="{Binding Departments}"
+                             SelectedItem="{Binding SelectedDepartment}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate >
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        
+                    </ListBox>-->
+
                     <Button Margin="5" Height="40"  
-                        Command="{Binding AddClientCommand}"
+                        Command="{Binding AddDepartmentCommand}"
+                        CommandParameter="{Binding ElementName=DepartmentsList}"
                         Cursor="Hand">
-                        <StackPanel Orientation="Horizontal">
+                        <!--<StackPanel Orientation="Horizontal">
                             <fa:ImageAwesome Icon="Solid_Plus" Height="20" Margin="0,0,10,0" Foreground="Yellow">
                                 <fa:ImageAwesome.Effect>
                                     <DropShadowEffect ShadowDepth="2"/>
                                 </fa:ImageAwesome.Effect>
                             </fa:ImageAwesome>
-                            <TextBlock Text="Добавить" FontSize="18"/>
-                        </StackPanel>
+                            <TextBlock Text="Добавить отдел"/>
+                        </StackPanel>-->
+                        <TextBlock Text="Добавить отдел"/>
                     </Button>
                     <Button Height="40" Margin="5" 
                         Command="{Binding DeleteClientCommand}" 
                         CommandParameter="{Binding SelectedClient}"  Cursor="Hand">
-                        <StackPanel Orientation="Horizontal">
+                        <!--<StackPanel Orientation="Horizontal">
                             <fa:ImageAwesome Icon="Solid_Trash" Height="20" Margin="0,0,10,0" Foreground="red">
                                 <fa:ImageAwesome.Effect>
                                     <DropShadowEffect ShadowDepth="2"/>
                                 </fa:ImageAwesome.Effect>
                             </fa:ImageAwesome>
-                            <TextBlock Text="Удалить" FontSize="18"/>
-                        </StackPanel>
+                            <TextBlock Text="Удалить отдел" />
+                        </StackPanel>-->
+                        <TextBlock Text="Удалить отдел" />
                     </Button>
                     <Button Height="40" Margin="5" 
                         Command="{Binding EditClientCommand}" 
                         CommandParameter="{Binding SelectedClient}" Cursor="Hand">
-                        <StackPanel Orientation="Horizontal">
+                        <!--<StackPanel Orientation="Horizontal">
                             <fa:ImageAwesome Icon="Solid_Pen" Height="20" Margin="0,0,10,0" Foreground="LightGreen">
                                 <fa:ImageAwesome.Effect>
                                     <DropShadowEffect ShadowDepth="2"/>
                                 </fa:ImageAwesome.Effect>
                             </fa:ImageAwesome>
-                            <TextBlock Text="Редактировать" FontSize="18"/>
-                        </StackPanel>
+                            <TextBlock Text="Редактировать отдел" />
+                        </StackPanel>-->
+                        <TextBlock Text="Редактировать отдел" />
                     </Button>
                 </StackPanel>
             </GroupBox>
@@ -116,12 +140,12 @@
 
         </Grid>
         <StatusBar DockPanel.Dock="Bottom" Height="40">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBlock Text="Режим работы:" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding Path=Worker}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <Button Width="170"  FontSize="20" Cursor="Hand" 
+            <Canvas Width="790">
+                <TextBlock Text="Режим работы:" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="-8" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding Path=Worker}" VerticalAlignment="Center" HorizontalAlignment="Left" Width="123" Canvas.Left="99" Canvas.Top="-8"/>
+                <Button Width="170" FontSize="20" Cursor="Hand" 
                         Command="{Binding OutLoggingCommand}" 
-                        CommandParameter="{Binding ElementName=MainWind}">
+                        CommandParameter="{Binding ElementName=MainWind}" Canvas.Left="599" Canvas.Top="-16" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
                         <fa:ImageAwesome Icon="Solid_SignOutAlt" Height="20" Margin="0,0,10,0" Foreground="White">
                             <fa:ImageAwesome.Effect>
@@ -131,7 +155,7 @@
                         <TextBlock Text="Выход"/>
                     </StackPanel>
                 </Button>
-            </StackPanel>
+            </Canvas>
         </StatusBar>
 
     </DockPanel>

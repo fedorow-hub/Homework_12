@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Homework_12.Models.Worker
 {
-    internal abstract class Worker
+    public abstract class Worker
     {
         public RoleDataAccess DataAccess { get; protected set; }
 

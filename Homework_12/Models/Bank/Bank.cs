@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace Homework_12.Models.Bank
 {
-    internal class Bank
+    public class Bank
     {
         /// <summary>
         /// Наименование Банка.
@@ -43,6 +43,17 @@ namespace Homework_12.Models.Bank
         public void DeleteClient(Client.Client client)
         {
             DepartmentRepository.DeleteClient(client.Id);
+        }
+
+        public void AddDepartment(Department.Department parentDepartment, Department.Department childDepartment)
+        {            
+            DepartmentRepository.InsertDepartment(parentDepartment, childDepartment);
+                       
+        }
+
+        public void UpdateDepartment(Department.Department department)
+        {
+            DepartmentRepository.UpdateDepartment(department);
         }
 
     }

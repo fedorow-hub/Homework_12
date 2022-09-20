@@ -23,7 +23,7 @@ namespace Homework_12
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         /// <summary>
@@ -56,5 +56,7 @@ namespace Homework_12
             var collection = (CollectionViewSource)text_box.FindResource("ClientCollection");
             collection.View.Refresh();
         }
+
+        
     }
 }

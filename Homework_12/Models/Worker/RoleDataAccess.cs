@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Homework_12.Models.Worker
 {
-    internal class RoleDataAccess
+    public class RoleDataAccess
     {
         public CommandsAccess Commands;
         public EditFieldsAccess EditFields;

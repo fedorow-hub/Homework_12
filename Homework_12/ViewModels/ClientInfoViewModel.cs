@@ -40,7 +40,7 @@ namespace Homework_12.ViewModels
 
             FillFields(currentClient);
             EnableFields(dataAccess);
-            CheckSaveClient(dataAccess);
+            CheckSaveClient();
 
             OutCommand = new LambdaCommand(OnOutCommandExecute, CanOutCommandExecute);
             SaveCommand = new LambdaCommand(OnSaveCommandExecute, CanSaveCommandExecute);
@@ -59,6 +59,8 @@ namespace Homework_12.ViewModels
             _patronymic = clientInfo.Patronymic ?? String.Empty;
             _phoneNumber = clientInfo.PhoneNumber?.ToString() ?? String.Empty;
 
+
+            ///пока не работает
             _passportSerie = clientInfo.SeriesAndNumberOfPassport.Serie.ToString() ?? String.Empty;
             _passportNumber = clientInfo.SeriesAndNumberOfPassport.Number.ToString() ?? String.Empty;
         }
@@ -88,7 +90,7 @@ namespace Homework_12.ViewModels
         /// метод для блокирования кнопки сохранения, если введенные данные не валидны
         /// </summary>
         /// <param name="dataAccess"></param>
-        private void CheckSaveClient(RoleDataAccess dataAccess)
+        private void CheckSaveClient()
         {
             
             EnableSaveClient = _borderFirstName != InputValueValidationEnum.Error
@@ -143,7 +145,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderFirstName, value);
-                CheckSaveClient(_dataAccess);
+                CheckSaveClient();
             }
         }
 
@@ -176,7 +178,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderLastName, value);
-                CheckSaveClient(_dataAccess);
+                CheckSaveClient();
             }
         }
 
@@ -209,7 +211,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderPatronymic, value);
-                CheckSaveClient(_dataAccess);
+                CheckSaveClient();
             }
         }
 
@@ -242,7 +244,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderPhoneNumber, value);
-                CheckSaveClient(_dataAccess);
+                CheckSaveClient();
             }
         }
 
@@ -287,7 +289,7 @@ namespace Homework_12.ViewModels
                 Set(ref _borderPassportSerie, value);
                 if (_dataAccess.EditFields.PassortData == true)
                 {
-                    CheckSaveClient(_dataAccess);
+                    CheckSaveClient();
                 }
             }
         }
@@ -301,7 +303,7 @@ namespace Homework_12.ViewModels
                 Set(ref _borderPassportNumber, value);
                 if (_dataAccess.EditFields.PassortData == true)
                 {
-                    CheckSaveClient(_dataAccess);
+                    CheckSaveClient();
                 }
             }
         }
@@ -346,7 +348,7 @@ namespace Homework_12.ViewModels
                 bank.EditClient(client);
             }
 
-            MainWindowViewModel.UpdateClientsList.Invoke();
+            //MainWindowViewModel.UpdateClientsList.Invoke();
 
             if (p is Window window)
             {
