@@ -56,5 +56,19 @@ namespace Homework_12.Models.Bank
             DepartmentRepository.UpdateDepartment(department);
         }
 
+        ///// <summary>
+        ///// Получение сведений об отделах        
+        ///// </summary>
+        ///// <returns></returns>
+        //public IEnumerable<Department.Department> GetDepartment()
+        //{
+        //    var listDepartments = new List<Department.Department>();
+        //    foreach (var department in DepartmentRepository.Departments)
+        //    {
+        //        listDepartments.Add(department);
+        //    }
+        //    return listDepartments;
+        //}
+
     }
 }

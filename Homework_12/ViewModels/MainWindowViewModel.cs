@@ -51,9 +51,9 @@ namespace Homework_12.ViewModels
             set => Set(ref clients, value);
         }
 
-        private List<Department> departments;
+        private ObservableCollection<Department> departments;
 
-        public List<Department> Departments
+        public ObservableCollection<Department> Departments
         {
             get => departments;
             set => Set(ref departments, value);
@@ -72,9 +72,9 @@ namespace Homework_12.ViewModels
 
             Clients = new ObservableCollection<Client>();
 
-            //Departments = new ObservableCollection<Department>();
+            Departments = new ObservableCollection<Department>();
 
-            Departments = (List<Department>)Bank.DepartmentRepository.Departments;
+            //Departments = (List<Department>)Bank.DepartmentRepository.Departments;
 
             //#region commands
             //DeleteClientCommand = new LambdaCommand(OnDeleteClientCommandExecute, CanDeleteClientCommandExecute);
@@ -90,11 +90,24 @@ namespace Homework_12.ViewModels
 
             //UpdateClientsList += UpdateClients;
             //UpdateClientsList.Invoke();
+
+            UpdateDepartmentList += UpdateDeparments;
+            UpdateDepartmentList.Invoke();
         }
 
-        
+        /// <summary>
+        /// Обновление списка отделов
+        /// </summary>
+        private void UpdateDeparments()
+        {
+            Departments.Clear();
+            foreach (var department in Bank.DepartmentRepository.Departments)
+            {
+                Departments.Add(department);
+            }
+        }
 
-        
+
 
         #region Команды
         #region OutLoggingCommand
@@ -150,7 +163,7 @@ namespace Homework_12.ViewModels
             if (p is TreeView treeView)
             {                
                 DepartmentInfoViewModel viewModel = new DepartmentInfoViewModel(new Department(), 
-                    (Department)treeView.SelectedItem, Bank);
+                    (Department)treeView.SelectedItem, this, Bank);
                 infoWindow.DataContext = viewModel;
                 infoWindow.Show();
             }   
@@ -176,7 +189,7 @@ namespace Homework_12.ViewModels
 
         private Department _SelectedDepartment;
         /// <summary>
-        /// Выбранный клиент
+        /// Выбранный отдел
         /// </summary>
         public Department SelectedDepartment
         {

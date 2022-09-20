@@ -20,7 +20,7 @@ namespace Homework_12.ViewModels
     {
         public Department parentDepartment { get; set; }
 
-
+        private MainWindowViewModel MainWindowViewModel { get; set; }
 
         private Bank bank { get; set; }
 
@@ -28,11 +28,13 @@ namespace Homework_12.ViewModels
         {
             
         }
-        public DepartmentInfoViewModel(Department departmentInfo, Department parentDepartment, Bank bank)
+        public DepartmentInfoViewModel(Department departmentInfo, Department parentDepartment, MainWindowViewModel mainWindowViewModel, Bank bank)
         {
             this.parentDepartment = parentDepartment;
             FillField(departmentInfo);
             this.bank = bank;
+
+            this.MainWindowViewModel=mainWindowViewModel;
 
             OutDepartmentCommand = new LambdaCommand(OnOutDepartmentCommandExecuted, CanOutDepartmentCommandExecute);
             SaveDepartmentCommand = new LambdaCommand(OnSaveDepartmentCommandExecuted, CanSaveDepartmentCommandExecute);
@@ -125,7 +127,7 @@ namespace Homework_12.ViewModels
         {
             var department = new Department(_nameDepartment);
             bank.AddDepartment(parentDepartment, department);
-            
+
             //if (currentDepartment.Id == 0) // новый отдел
             //{
 
@@ -137,7 +139,7 @@ namespace Homework_12.ViewModels
             //    department.Id = currentDepartment.Id;
             //    bank.UpdateDepartment(department);
             //}
-
+            MainWindowViewModel.UpdateDepartmentList.Invoke();
             if (p is Window window)
             {
                 window.Close();
