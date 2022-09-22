@@ -11,13 +11,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
+using Homework_12.Models.Department;
 
 namespace Homework_12.ViewModels
 {
     internal class ClientInfoViewModel : ViewModel
     {
-        private Client currentClient { get; set; }
+        private ClientAccessInfo currentClient { get; set; }
         private Bank bank { get; set; }
+
+        private Department Department { get; set; }
 
         private RoleDataAccess _dataAccess;
 
@@ -27,12 +30,13 @@ namespace Homework_12.ViewModels
 
         public ClientInfoViewModel() { }
 
-        public ClientInfoViewModel(Client clientInfo, Bank bank,
-            MainWindowViewModel mainWindowViewModel, RoleDataAccess dataAccess, Worker worker)
+        public ClientInfoViewModel(ClientAccessInfo clientInfo, Bank bank,
+            MainWindowViewModel mainWindowViewModel, RoleDataAccess dataAccess, Worker worker, Department department)
         {
             this.currentClient = clientInfo;
             this.bank = bank;
             MainWindowViewModel = mainWindowViewModel;
+            Department = department;
 
             _dataAccess = dataAccess;
 
@@ -40,7 +44,7 @@ namespace Homework_12.ViewModels
 
             FillFields(currentClient);
             EnableFields(dataAccess);
-            CheckSaveClient();
+            CheckSaveClient(dataAccess);
 
             OutCommand = new LambdaCommand(OnOutCommandExecute, CanOutCommandExecute);
             SaveCommand = new LambdaCommand(OnSaveCommandExecute, CanSaveCommandExecute);
@@ -50,7 +54,7 @@ namespace Homework_12.ViewModels
         /// Заполнение данных
         /// </summary>
         /// <param name="clientInfo"></param>
-        private void FillFields(Client clientInfo)
+        private void FillFields(ClientAccessInfo clientInfo)
         {
             if (clientInfo is null)
                 return;
@@ -58,11 +62,8 @@ namespace Homework_12.ViewModels
             _lastname = clientInfo.Lastname ?? String.Empty;
             _patronymic = clientInfo.Patronymic ?? String.Empty;
             _phoneNumber = clientInfo.PhoneNumber?.ToString() ?? String.Empty;
-
-
-            ///пока не работает
-            _passportSerie = clientInfo.SeriesAndNumberOfPassport.Serie.ToString() ?? String.Empty;
-            _passportNumber = clientInfo.SeriesAndNumberOfPassport.Number.ToString() ?? String.Empty;
+            _passportSerie = clientInfo.PassportSerie ?? String.Empty;
+            _passportNumber = clientInfo.PassportNumber ?? String.Empty;
         }
 
         /// <summary>
@@ -90,16 +91,24 @@ namespace Homework_12.ViewModels
         /// метод для блокирования кнопки сохранения, если введенные данные не валидны
         /// </summary>
         /// <param name="dataAccess"></param>
-        private void CheckSaveClient()
+        private void CheckSaveClient(RoleDataAccess dataAccess)
         {
-            
-            EnableSaveClient = _borderFirstName != InputValueValidationEnum.Error
-                            && _borderLastName != InputValueValidationEnum.Error
-                            && _borderPatronymic != InputValueValidationEnum.Error
-                            && _borderPassportSerie != InputValueValidationEnum.Error
-                            && _borderPassportNumber != InputValueValidationEnum.Error
-                            && _borderPhoneNumber != InputValueValidationEnum.Error;
-            
+            if (dataAccess.EditFields.PassortData == false)
+            {
+                EnableSaveClient = _borderFirstName != InputValueValidationEnum.Error
+                               && _borderLastName != InputValueValidationEnum.Error
+                               && _borderPatronymic != InputValueValidationEnum.Error
+                               && _borderPhoneNumber != InputValueValidationEnum.Error;
+            }
+            else
+            {
+                EnableSaveClient = _borderFirstName != InputValueValidationEnum.Error
+                               && _borderLastName != InputValueValidationEnum.Error
+                               && _borderPatronymic != InputValueValidationEnum.Error
+                               && _borderPassportSerie != InputValueValidationEnum.Error
+                               && _borderPassportNumber != InputValueValidationEnum.Error
+                               && _borderPhoneNumber != InputValueValidationEnum.Error;
+            }
         }
 
         /// <summary>
@@ -145,7 +154,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderFirstName, value);
-                CheckSaveClient();
+                CheckSaveClient(_dataAccess);
             }
         }
 
@@ -178,7 +187,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderLastName, value);
-                CheckSaveClient();
+                CheckSaveClient(_dataAccess);
             }
         }
 
@@ -211,7 +220,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderPatronymic, value);
-                CheckSaveClient();
+                CheckSaveClient(_dataAccess);
             }
         }
 
@@ -244,7 +253,7 @@ namespace Homework_12.ViewModels
             set
             {
                 Set(ref _borderPhoneNumber, value);
-                CheckSaveClient();
+                CheckSaveClient(_dataAccess);
             }
         }
 
@@ -289,7 +298,7 @@ namespace Homework_12.ViewModels
                 Set(ref _borderPassportSerie, value);
                 if (_dataAccess.EditFields.PassortData == true)
                 {
-                    CheckSaveClient();
+                    CheckSaveClient(_dataAccess);
                 }
             }
         }
@@ -303,7 +312,7 @@ namespace Homework_12.ViewModels
                 Set(ref _borderPassportNumber, value);
                 if (_dataAccess.EditFields.PassortData == true)
                 {
-                    CheckSaveClient();
+                    CheckSaveClient(_dataAccess);
                 }
             }
         }
@@ -336,11 +345,12 @@ namespace Homework_12.ViewModels
         private void OnSaveCommandExecute(object p)
         {
             var client = new Client(_firstname, _lastname, _patronymic,
-                new PhoneNumber(_phoneNumber), new Passport(int.Parse(_passportSerie), int.Parse(_passportNumber)));
+                new PhoneNumber(_phoneNumber), _enablePassportData ? new Passport(int.Parse(_passportSerie), int.Parse(_passportNumber)) :
+                new Passport(currentClient.SeriesAndNumberOfPassport.Serie, currentClient.SeriesAndNumberOfPassport.Number));
 
             if (currentClient.Id == 0) // новый клиент
             {
-                //bank.AddClient(department, client);
+                bank.AddClient(Department, client);
             }
             else
             {
@@ -348,7 +358,7 @@ namespace Homework_12.ViewModels
                 bank.EditClient(client);
             }
 
-            //MainWindowViewModel.UpdateClientsList.Invoke();
+            MainWindowViewModel.UpdateClientsList.Invoke();
 
             if (p is Window window)
             {

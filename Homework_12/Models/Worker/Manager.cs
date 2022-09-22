@@ -27,6 +27,15 @@ namespace Homework_12.Models.Worker
                     PhoneNumber = true
                 });
         }
+
+        public override ClientAccessInfo GetClientInfo(Client.Client client)
+        {
+            ClientAccessInfo clientInfo = new ClientAccessInfo(client);
+            clientInfo.PassportSerie = client.SeriesAndNumberOfPassport.Serie.ToString();
+            clientInfo.PassportNumber = client.SeriesAndNumberOfPassport.Number.ToString();
+            return clientInfo;
+        }
+
         public override string ToString()
         {
             return "Менеджер";

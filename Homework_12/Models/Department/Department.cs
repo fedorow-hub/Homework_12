@@ -10,7 +10,10 @@ namespace Homework_12.Models.Department
     {
         #region Поля
 
-        private int id;
+        /// <summary>
+        /// идентификационный номер отдела
+        /// </summary>
+        Guid id;
         /// <summary>
         /// Наименование отдела
         /// </summary>
@@ -36,6 +39,7 @@ namespace Homework_12.Models.Department
         /// <param name="Count">Количество сотрудников, которых нужно создать</param>
         public Department(string Name)
         {
+            this.id = Guid.NewGuid();
             this.name = Name;
             this.clients = new List<Client.Client>();            
             this.departments = new List<Department>();
@@ -78,7 +82,7 @@ namespace Homework_12.Models.Department
         /// </summary>
         public string Name { get { return this.name; } set { this.name = value; } }
 
-        public int Id { get { return id; } set { id = value; } }
+        public Guid Id { get { return id; } set { id = value; } }
 
         #endregion
     }

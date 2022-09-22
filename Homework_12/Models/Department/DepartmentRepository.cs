@@ -17,15 +17,10 @@ namespace Homework_12.Models.Department
         /// ID клиента
         /// </summary>
         private static int Id;
-
-        /// <summary>
-        /// ID отдела
-        /// </summary>
-        private static int depId;
+                
         static DepartmentRepository()
         {
-            Id = 0;
-            depId = 0;
+            Id = 0;            
         }
 
         /// <summary>
@@ -33,13 +28,7 @@ namespace Homework_12.Models.Department
         /// </summary>
         /// <returns></returns>
         private static int NextId() => ++Id;
-
-        /// <summary>
-        /// Получение следующего свободного идентификатора отдела
-        /// </summary>
-        /// <returns></returns>
-        private static int NextDepId() => ++depId;
-
+                
         private List<Department>? _departments;
         public List<Department>? Departments => _departments;
 
@@ -93,8 +82,7 @@ namespace Homework_12.Models.Department
         public void InsertDepartment(Department parentDepartment, Department childDepartment)
         {
             if (childDepartment is null)
-                return;            
-            childDepartment.Id = NextDepId();
+                return; 
             if(parentDepartment == null)
             {
                 _departments.Add(childDepartment);
@@ -109,8 +97,8 @@ namespace Homework_12.Models.Department
         /// <summary>
         /// Редактирование названия отдела
         /// </summary>
-        /// <param name="parentDepartment"></param>
-        /// <param name="childDepartment"></param>
+        /// <param name="department"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void UpdateDepartment(Department department)
         {
             if (!_departments.Any(c => c.Id == department.Id))
@@ -149,6 +137,37 @@ namespace Homework_12.Models.Department
             }
             Save();
         }
+
+        /// <summary>
+        /// Удаление отдела
+        /// </summary>
+        /// <param name="department"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void DeleteDepartment(Department parentDepartment, Department deletingDepartment)
+        {
+            if (parentDepartment.departments.Count > 0)
+            {
+                foreach (var item in parentDepartment.departments)
+                {
+                    if (item.Id == deletingDepartment.Id)
+                    {
+                        parentDepartment.departments.Remove(item);
+                        Save();
+                        return;
+                    }
+                    else
+                    {
+                        DeleteDepartment(item, deletingDepartment);
+                    }
+                }
+            }
+
+        }
+
+         
+
+
+
 
         /// <summary>
         /// Сохранение списка отделов с включенными в них клиентами в файл

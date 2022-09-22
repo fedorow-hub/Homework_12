@@ -1,4 +1,5 @@
 ﻿using Homework_12.Models.Client;
+using Homework_12.Models.Department;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace Homework_12
             if (client.Firstname.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
             if (client.Lastname.Contains(filter_text, StringComparison.OrdinalIgnoreCase)) return;
 
-            e.Accepted = false;
+            e.Accepted = false;            
         }
 
         /// <summary>
@@ -55,8 +56,6 @@ namespace Homework_12
             var text_box = (TextBox)sender;
             var collection = (CollectionViewSource)text_box.FindResource("ClientCollection");
             collection.View.Refresh();
-        }
-
-        
+        }  
     }
 }

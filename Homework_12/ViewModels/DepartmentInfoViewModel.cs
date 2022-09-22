@@ -126,19 +126,7 @@ namespace Homework_12.ViewModels
         private void OnSaveDepartmentCommandExecuted(object p)
         {
             var department = new Department(_nameDepartment);
-            bank.AddDepartment(parentDepartment, department);
-
-            //if (currentDepartment.Id == 0) // новый отдел
-            //{
-
-
-            //    //bank.AddDepartment(department);
-            //}
-            //else
-            //{
-            //    department.Id = currentDepartment.Id;
-            //    bank.UpdateDepartment(department);
-            //}
+            bank.AddDepartment(parentDepartment, department);            
             MainWindowViewModel.UpdateDepartmentList.Invoke();
             if (p is Window window)
             {

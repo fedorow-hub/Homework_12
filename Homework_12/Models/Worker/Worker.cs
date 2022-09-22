@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Homework_12.Models.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,11 @@ namespace Homework_12.Models.Worker
     {
         public RoleDataAccess DataAccess { get; protected set; }
 
-        
+        /// <summary>
+        /// Получение информации о клиенте
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public abstract ClientAccessInfo GetClientInfo(Client.Client client);
     }
 }

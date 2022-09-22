@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Homework_12.Models.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,15 @@ namespace Homework_12.Models.Worker
                     PassortData = false,
                     PhoneNumber = true
                 });
+        }        
+
+        public override ClientAccessInfo GetClientInfo(Client.Client client)
+        {
+            ClientAccessInfo clientAccessInfo = new ClientAccessInfo(client);
+            clientAccessInfo.PassportSerie = "****";
+            clientAccessInfo.PassportNumber = "*******";
+
+            return clientAccessInfo;
         }
         public override string ToString()
         {

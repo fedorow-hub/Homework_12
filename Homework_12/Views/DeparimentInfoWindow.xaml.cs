@@ -24,9 +24,5 @@ namespace Homework_12.Views
             InitializeComponent();
         }
 
-        private void Accept_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-        }
     }
 }

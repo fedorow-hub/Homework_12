@@ -1,4 +1,5 @@
-﻿using Homework_12.Models.Department;
+﻿using Homework_12.Models.Client;
+using Homework_12.Models.Department;
 using Homework_12.Models.Worker;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace Homework_12.Models.Bank
 
         private Worker.Worker _worker;
 
+        public Department.Department MainDepartment { get; set; }
+        
+
         private DepartmentRepository departmentRepository;
 
         public DepartmentRepository DepartmentRepository { get { return departmentRepository; } set { departmentRepository = value; } }
@@ -28,6 +32,9 @@ namespace Homework_12.Models.Bank
             Name = name;
             this.departmentRepository = departmentRepository;
             this._worker = worker;
+
+            MainDepartment = new Department.Department();
+            MainDepartment.departments = departmentRepository.Departments;
         }
 
         public void AddClient(Department.Department department, Client.Client client)
@@ -47,28 +54,14 @@ namespace Homework_12.Models.Bank
 
         public void AddDepartment(Department.Department parentDepartment, Department.Department childDepartment)
         {            
-            DepartmentRepository.InsertDepartment(parentDepartment, childDepartment);
-                       
+            DepartmentRepository.InsertDepartment(parentDepartment, childDepartment);                       
         }
 
-        public void UpdateDepartment(Department.Department department)
+        public void DeleteDepartment(Department.Department department)
         {
-            DepartmentRepository.UpdateDepartment(department);
+            DepartmentRepository.DeleteDepartment(MainDepartment, department);
         }
 
-        ///// <summary>
-        ///// Получение сведений об отделах        
-        ///// </summary>
-        ///// <returns></returns>
-        //public IEnumerable<Department.Department> GetDepartment()
-        //{
-        //    var listDepartments = new List<Department.Department>();
-        //    foreach (var department in DepartmentRepository.Departments)
-        //    {
-        //        listDepartments.Add(department);
-        //    }
-        //    return listDepartments;
-        //}
-
+                     
     }
 }

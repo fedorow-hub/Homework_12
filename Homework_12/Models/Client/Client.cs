@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Homework_12.Models.Client
 {
     public class Client
@@ -13,7 +14,7 @@ namespace Homework_12.Models.Client
         private string lastname;
         private string patronymic;
         private PhoneNumber phoneNumber;
-        private Passport seriesAndNumberOfPassport;   
+        private Passport seriesAndNumberOfPassport;        
 
         public int Id { get { return id; } set { id = value; } }
 
@@ -25,8 +26,11 @@ namespace Homework_12.Models.Client
 
         public PhoneNumber PhoneNumber { get { return phoneNumber; } set { phoneNumber = value; } }
 
-        public Passport SeriesAndNumberOfPassport { get { return seriesAndNumberOfPassport; } set { seriesAndNumberOfPassport = value; } }
-
+        public Passport SeriesAndNumberOfPassport 
+        { 
+            get { return seriesAndNumberOfPassport; } 
+            set { seriesAndNumberOfPassport = value; } 
+        }        
 
         public Client() { }
 
@@ -37,12 +41,7 @@ namespace Homework_12.Models.Client
             this.lastname = lastname;
             this.patronymic = patronymic;
             this.phoneNumber = phoneNumber;
-            this.seriesAndNumberOfPassport = seriesAndNumberOfPassport;            
+            this.seriesAndNumberOfPassport = seriesAndNumberOfPassport;                     
         }
-
-        //public override string ToString()
-        //{
-        //    return $"{firstname} {lastname} {patronymic} {phoneNumber} {seriesAndNumberOfPassport}";
-        //}   
     }
 }
