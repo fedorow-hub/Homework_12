@@ -2,38 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
 using Homework_12.Models.Client;
 using System.IO;
 
 namespace Homework_12.Models.Department
 {    
-
     public class DepartmentRepository : IEnumerable<Department>
-    {
-        /// <summary>
-        /// ID клиента
-        /// </summary>
-        private static int Id;
-                
-        static DepartmentRepository()
-        {
-            Id = 0;            
-        }
-
-        /// <summary>
-        /// Получение следующего свободного идентификатора клиента
-        /// </summary>
-        /// <returns></returns>
-        private static int NextId() => ++Id;
-                
+    {                                
         private List<Department>? _departments;
         public List<Department>? Departments => _departments;
 
-        private List<Client.Client>? _clients;
-        public List<Client.Client>? Clients => _clients;        
+        private List<ClientAccessInfo>? _clients;
+        public List<ClientAccessInfo>? Clients => _clients;        
 
         /// <summary>
         /// Файл репозитория
@@ -66,11 +47,11 @@ namespace Homework_12.Models.Department
         /// Добавление нового клиента
         /// </summary>
         /// <param name="client">клиент</param>
-        public void InsertClient(Department department, Client.Client client)
+        public void InsertClient(Department department, ClientAccessInfo client)
         {
             if (client is null)
                 return;
-            client.Id = NextId();
+            client.Id = Guid.NewGuid();
             department.clients.Add(client);             
             Save();
         }
@@ -114,14 +95,12 @@ namespace Homework_12.Models.Department
         /// Обновление данных о клиенте
         /// </summary>
         /// <param name="client"></param>
-        public void UpdateClient(Client.Client client)
+        public void UpdateClient(Department department, ClientAccessInfo client)
         {
-            if (!_clients.Any(c => c.Id == client.Id))
+            if (department.clients.Any(c => c.Id == client.Id))
             {
-                throw new ArgumentOutOfRangeException(nameof(client), "Такого объекта нет в списке");
+                department.clients[department.clients.IndexOf(department.clients.First(c => c.Id == client.Id))] = client;
             }
-
-            _clients[_clients.IndexOf(_clients.First(c => c.Id == client.Id))] = client;
             Save();
         }
 
@@ -129,11 +108,11 @@ namespace Homework_12.Models.Department
         /// Удаление клиента
         /// </summary>
         /// <param name="clientId">ИД клиента</param>
-        public void DeleteClient(int clientId)
+        public void DeleteClient(Department department, Guid clientId)
         {
-            if (_clients.Any(c => c.Id == clientId))
+            if (department.clients.Any(c => c.Id == clientId))
             {
-                _clients.Remove(_clients.FirstOrDefault(c => c.Id == clientId));
+                department.clients.Remove(department.clients.FirstOrDefault(c => c.Id == clientId));
             }
             Save();
         }
@@ -161,13 +140,7 @@ namespace Homework_12.Models.Department
                     }
                 }
             }
-
         }
-
-         
-
-
-
 
         /// <summary>
         /// Сохранение списка отделов с включенными в них клиентами в файл
@@ -183,8 +156,7 @@ namespace Homework_12.Models.Department
             //}
             string json = JsonSerializer.Serialize(_departments);
             File.WriteAllText(_path, json);
-        }
-               
+        }               
 
         /// <summary>
         /// Загрузка списка отделов
@@ -199,7 +171,7 @@ namespace Homework_12.Models.Department
             }
             _departments = JsonSerializer.Deserialize<List<Department>>(data, new JsonSerializerOptions()
             {
-                //PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true
             });
 
             if (_departments is null)
@@ -216,7 +188,6 @@ namespace Homework_12.Models.Department
         {
             _departments = new List<Department>();            
         }
-
         public IEnumerator<Department> GetEnumerator()
         {
             for (int i = 0; i < Departments.Count(); i++)

@@ -11,10 +11,7 @@ namespace Homework_12.Models.Client
         public string PassportSerie { get; set; }
         public string PassportNumber { get; set; }
 
-        public ClientAccessInfo()
-        {
-
-        }
+        public ClientAccessInfo(){}
         public ClientAccessInfo(Client client)
             : base(client.Firstname, client.Lastname, client.Patronymic, client.PhoneNumber, client.SeriesAndNumberOfPassport)
         {

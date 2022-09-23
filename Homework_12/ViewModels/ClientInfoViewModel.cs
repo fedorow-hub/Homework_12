@@ -81,10 +81,12 @@ namespace Homework_12.ViewModels
             _borderFirstName = InputHighlighting(_enableFirstName, _firstname.Length > 0);
             _borderLastName = InputHighlighting(_enableLastName, _lastname.Length > 0);
             _borderPatronymic = InputHighlighting(_enablePatronymic, _patronymic.Length > 0);
-            _borderPhoneNumber = InputHighlighting(_enablePhoneNumber, Models.Client.PhoneNumber.IsPhoneNumber(_phoneNumber));           
-            _borderPassportSerie = InputHighlighting(_enablePassportData, Passport.IsSeries(_passportSerie));
-            _borderPassportNumber = InputHighlighting(_enablePassportData, Passport.IsNumber(_passportNumber));
-            
+            _borderPhoneNumber = InputHighlighting(_enablePhoneNumber, Models.Client.PhoneNumber.IsPhoneNumber(_phoneNumber));
+            if (dataAccess.EditFields.PassortData == true)
+            {
+                _borderPassportSerie = InputHighlighting(_enablePassportData, Passport.IsSeries(_passportSerie));
+                _borderPassportNumber = InputHighlighting(_enablePassportData, Passport.IsNumber(_passportNumber));
+            }                        
         }
 
         /// <summary>
@@ -344,21 +346,21 @@ namespace Homework_12.ViewModels
 
         private void OnSaveCommandExecute(object p)
         {
-            var client = new Client(_firstname, _lastname, _patronymic,
+            var client = new ClientAccessInfo(new Client(_firstname, _lastname, _patronymic,
                 new PhoneNumber(_phoneNumber), _enablePassportData ? new Passport(int.Parse(_passportSerie), int.Parse(_passportNumber)) :
-                new Passport(currentClient.SeriesAndNumberOfPassport.Serie, currentClient.SeriesAndNumberOfPassport.Number));
-
-            if (currentClient.Id == 0) // новый клиент
+                new Passport(currentClient.SeriesAndNumberOfPassport.Serie, currentClient.SeriesAndNumberOfPassport.Number)));
+               
+            if (currentClient.Id == Guid.Empty) // новый клиент
             {
                 bank.AddClient(Department, client);
             }
             else
             {
                 client.Id = currentClient.Id;
-                bank.EditClient(client);
+                bank.EditClient(Department, client);
             }
 
-            MainWindowViewModel.UpdateClientsList.Invoke();
+            MainWindowViewModel.UpdateDepartmentList.Invoke();
 
             if (p is Window window)
             {

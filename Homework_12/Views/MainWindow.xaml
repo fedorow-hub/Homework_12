@@ -10,9 +10,9 @@
         xmlns:behaviours="clr-namespace:Homework_12.Infrastructure"
         xmlns:vm="clr-namespace:Homework_12.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="464" Width="800" WindowStartupLocation="CenterScreen"
+        Title="{Binding Title}" Height="464" Width="930" WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
-    
+
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="380" >
             <Grid.ColumnDefinitions>
@@ -22,7 +22,7 @@
             <GroupBox Header="Отделы" Margin="5,0">
                 <StackPanel>
                     <TreeView x:Name="DepartmentsList" Height="224" Width="200" 
-                              ItemsSource="{Binding Departments}">    
+                              ItemsSource="{Binding Departments}">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding departments}">
                                 <TextBlock Text="{Binding Name}"/>
@@ -31,18 +31,18 @@
                         <e1:Interaction.Behaviors>
                             <behaviours:BindableSelectedItemBehavior SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" />
                         </e1:Interaction.Behaviors>
-                    </TreeView>      
+                    </TreeView>
                     <Button Margin="5" Height="40"  
                         Command="{Binding AddDepartmentCommand}"
                         CommandParameter="{Binding ElementName=DepartmentsList}"
-                        Cursor="Hand">                        
+                        Cursor="Hand">
                         <TextBlock Text="Добавить отдел"/>
                     </Button>
                     <Button Height="40" Margin="5" 
                         Command="{Binding DeleteDepartmentCommand}" 
-                        CommandParameter="{Binding ElementName=DepartmentsList}"  Cursor="Hand">                        
+                        CommandParameter="{Binding ElementName=DepartmentsList}"  Cursor="Hand">
                         <TextBlock Text="Удалить отдел" />
-                    </Button>                    
+                    </Button>
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="1" Header="Клиенты" Margin="5,0">
@@ -52,15 +52,16 @@
                                   Source="{Binding Path=SelectedDepartment.clients}"                                  
                                   Filter="ClientCollectionFilter"/>
                 </GroupBox.Resources>
-                <DockPanel Grid.Column="1" Background="White" Margin="0,15,0,-7" Width="542">                    
-                    <DockPanel DockPanel.Dock="Top">
+                <DockPanel Grid.Column="1" Background="White" Margin="0,15,0,-7" Width="633">
+                    <DockPanel DockPanel.Dock="Top" Width="133" HorizontalAlignment="Left" Margin="10,0,0,0">
                         <fa:FontAwesome Icon="Solid_Search" Margin="3,0" FontSize="18" Foreground="Gray"/>
-                        <TextBox Name="ClientFilter" TextChanged="OnClientFilterTextChanget" Cursor="Arrow"/>
+                        <TextBox Name="ClientFilter" TextChanged="OnClientFilterTextChanget" Cursor="Arrow" Margin="0,0,0,5" Width="100"/>
                     </DockPanel>
-                    <DataGrid DockPanel.Dock="Top" Height="228" 
+                    <DataGrid DockPanel.Dock="Top" Height="235" 
                               ItemsSource="{Binding Source={StaticResource ClientCollection}}"
                               SelectedItem="{Binding SelectedClient}"
-                              AutoGenerateColumns="False">
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True" Width="609">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Фамилия" Binding="{Binding Lastname}"/>
                             <DataGridTextColumn Header="Имя" Binding="{Binding Firstname}"/>
@@ -86,7 +87,7 @@
                         </Button>
                         <Button Height="40" Margin="5" 
                         Command="{Binding DeleteClientCommand}" 
-                        CommandParameter="{Binding SelectedClient}"  Cursor="Hand" Width="149">
+                        CommandParameter="{Binding SelectedDepartment}"  Cursor="Hand" Width="149">
                             <StackPanel Orientation="Horizontal">
                                 <fa:ImageAwesome Icon="Solid_Trash" Height="20" Margin="0,0,10,0" Foreground="red">
                                     <fa:ImageAwesome.Effect>
@@ -98,7 +99,7 @@
                         </Button>
                         <Button Height="40" Margin="5" 
                         Command="{Binding EditClientCommand}" 
-                        CommandParameter="{Binding SelectedClient}" Cursor="Hand" Width="auto">
+                        CommandParameter="{Binding SelectedDepartment}" Cursor="Hand" Width="auto">
                             <StackPanel Orientation="Horizontal">
                                 <fa:ImageAwesome Icon="Regular_Edit" Height="20" Margin="0,0,10,0" Foreground="LightGreen">
                                     <fa:ImageAwesome.Effect>

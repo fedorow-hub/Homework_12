@@ -8,12 +8,8 @@ using Homework_12.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
-using System.IO;
 using System.Windows.Controls;
 
 namespace Homework_12.ViewModels
@@ -33,23 +29,11 @@ namespace Homework_12.ViewModels
         }
         #endregion
 
-        public Action UpdateClientsList;
-
         public Action UpdateDepartmentList;
 
         public Bank Bank { get; private set; }
 
         public Worker Worker { get; private set; }
-
-        //public Action UpdateClientsList;
-
-        private ObservableCollection<Client> clients;
-
-        public ObservableCollection<Client> Clients
-        {
-            get => clients;
-            set => Set(ref clients, value);
-        }
 
         private ObservableCollection<Department> departments;
 
@@ -58,19 +42,7 @@ namespace Homework_12.ViewModels
             get => departments;
             set => Set(ref departments, value);
         }
-        /// <summary>
-        /// Выбранный отдел
-        /// </summary>
-        private Department selectedDepartment;
-        /// <summary>
-        /// Выбранный отдел
-        /// </summary>
-        public Department SelectedDepartment
-        {
-            get => selectedDepartment;
-            set => Set(ref selectedDepartment, value);
-        }
-
+        
         public MainWindowViewModel(){}
 
         public MainWindowViewModel(Worker worker)
@@ -79,25 +51,20 @@ namespace Homework_12.ViewModels
             this.title = $"{Bank.Name}. Работа с клиентами";
             Worker = worker;
 
-            Clients = new ObservableCollection<Client>();
-
             Departments = new ObservableCollection<Department>();
                        
-            //#region commands
-            //DeleteClientCommand = new LambdaCommand(OnDeleteClientCommandExecute, CanDeleteClientCommandExecute);
+            #region commands
+            DeleteClientCommand = new LambdaCommand(OnDeleteClientCommandExecute, CanDeleteClientCommandExecute);
             OutLoggingCommand = new LambdaCommand(OnOutLoggingCommandExecute, CanOutLoggingCommandExecute);
             AddClientCommand = new LambdaCommand(OnAddClientCommandExecute, CanAddClientCommandExecute);
             AddDepartmentCommand = new LambdaCommand(OnAddDepartmentCommandExecute, CanAddDepartmentCommandExecute);
             DeleteDepartmentCommand = new LambdaCommand(OnDeleteDepartmentCommandExecute, CanDeleteDepartmentCommandExecute);            
-            //EditClientCommand = new LambdaCommand(OnEditClientCommandExecute, CanEditClientCommandExecute);
-            //#endregion
+            EditClientCommand = new LambdaCommand(OnEditClientCommandExecute, CanEditClientCommandExecute);
+            #endregion
 
             _enableAddClient = Worker.DataAccess.Commands.AddClient;
             _enableDelClient = Worker.DataAccess.Commands.DelClient;
-            _enableEditClient = Worker.DataAccess.Commands.EditClient && Clients.Count > 0;
-
-            UpdateClientsList += UpdateClients;
-            UpdateClientsList.Invoke();
+            _enableEditClient = Worker.DataAccess.Commands.EditClient;            
 
             UpdateDepartmentList += UpdateDeparments;
             UpdateDepartmentList.Invoke();
@@ -107,23 +74,14 @@ namespace Homework_12.ViewModels
         /// Обновление списка отделов
         /// </summary>
         private void UpdateDeparments()
-        {
+        {            
             Departments.Clear();
+            Department temtDepartment = new Department();
             foreach (var department in Bank.DepartmentRepository.Departments)
             {
-                Departments.Add(department);
-            }
-        }
-
-        /// <summary>
-        /// Обновление списка клиентов
-        /// </summary>
-        private void UpdateClients()
-        {
-            Clients.Clear();
-            foreach (var clientInfo in GetClientsInfo())
-            {
-                Clients.Add(clientInfo);
+                temtDepartment = department;
+                temtDepartment.clients = GetClientsInfo(department);
+                Departments.Add(temtDepartment);
             }
         }
 
@@ -132,14 +90,15 @@ namespace Homework_12.ViewModels
         /// представление зависит от работника
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ClientAccessInfo> GetClientsInfo()
+        public List<ClientAccessInfo> GetClientsInfo(Department department)
         {
             var clientsInfo = new List<ClientAccessInfo>();
-            foreach (var client in Bank.DepartmentRepository.Clients??new List<Client>())
+                        
+            foreach (var client in department.clients)
             {
                 clientsInfo.Add(Worker.GetClientInfo(client));
             }
-            return clientsInfo;
+            return clientsInfo;            
         }
 
         #region Команды
@@ -171,15 +130,14 @@ namespace Homework_12.ViewModels
             else return false;
         }
         private void OnAddClientCommandExecute(object p)
-        {
+        {            
             if(p is TreeView treeView)
             {
                 ClientInfoWindow infoWindow = new ClientInfoWindow();
                 ClientInfoViewModel viewModel = new ClientInfoViewModel(new ClientAccessInfo(), Bank, this, Worker.DataAccess, Worker, (Department)treeView.SelectedItem);
                 infoWindow.DataContext = viewModel;
                 infoWindow.Show();
-            }
-            
+            }            
         }
 
         #endregion
@@ -233,24 +191,68 @@ namespace Homework_12.ViewModels
         }
         #endregion
 
-        
+        #region DeleteClient
+
+        public ICommand DeleteClientCommand { get; }
+
+        private bool CanDeleteClientCommandExecute(object p)
+        {
+            if (_enableDelClient == true && SelectedClient != null)
+                return true;
+            else return false;            
+        }
+
+        private void OnDeleteClientCommandExecute(object p)
+        {
+            if (SelectedClient is null) return;
+            if(p is Department department)
+            {
+                Bank.DeleteClient(department, SelectedClient);
+                UpdateDepartmentList.Invoke();
+            }
+            
+        }
+        #endregion
+
+        #region EditClient
+
+        public ICommand EditClientCommand { get; }
+
+        private bool CanEditClientCommandExecute(object p)
+        {
+            if (SelectedClient is null)
+                return false;
+            return true;
+        }
+
+        private void OnEditClientCommandExecute(object p)
+        {
+            if (SelectedClient is null) return;
+
+            ClientInfoWindow infoWindow = new ClientInfoWindow();
+            ClientInfoViewModel viewModel = new ClientInfoViewModel(SelectedClient, Bank, this, Worker.DataAccess, Worker, (Department)p);
+            infoWindow.DataContext = viewModel;
+            infoWindow.Show();
+        }
+        #endregion
 
         #endregion
 
         #region SelectedClient
 
-        private Client _SelectedClient;
+        private ClientAccessInfo _SelectedClient;
         /// <summary>
         /// Выбранный клиент
         /// </summary>
-        public Client SelectedClient
+        public ClientAccessInfo SelectedClient
         {
             get { return _SelectedClient; }
             set => Set(ref _SelectedClient, value);
         }
         #endregion
 
-        /*#region SelectedDepartment
+
+        #region SelectedDepartment
 
         private Department _SelectedDepartment;
         /// <summary>
@@ -259,9 +261,9 @@ namespace Homework_12.ViewModels
         public Department SelectedDepartment
         {
             get { return _SelectedDepartment; }
-            set => Set(ref _SelectedDepartment, value);            
+            set => Set(ref _SelectedDepartment, value);
         }
-        #endregion*/
+        #endregion
 
 
         #region EnableAddClient

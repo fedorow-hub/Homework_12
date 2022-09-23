@@ -9,14 +9,14 @@ namespace Homework_12.Models.Client
 {
     public class Client
     {
-        private int id;
+        Guid id;
         private string firstname;
         private string lastname;
         private string patronymic;
         private PhoneNumber phoneNumber;
         private Passport seriesAndNumberOfPassport;        
 
-        public int Id { get { return id; } set { id = value; } }
+        public Guid Id { get { return id; } set { id = value; } }
 
         public string Firstname { get { return firstname; } set { firstname = value; } }
 
@@ -37,6 +37,7 @@ namespace Homework_12.Models.Client
         public Client(string firstname, string lastname, string patronymic,
             PhoneNumber phoneNumber, Passport seriesAndNumberOfPassport)
         {
+            
             this.firstname = firstname;
             this.lastname = lastname;
             this.patronymic = patronymic;

@@ -24,7 +24,7 @@ namespace Homework_12.Models.Department
         /// <summary>
         /// Список клиентов отдела
         /// </summary>
-        public List<Client.Client> clients { get; set; }
+        public List<Client.ClientAccessInfo> clients { get; set; }
 
         /// <summary>
         /// Список отделов, вложенных в текущий отдел
@@ -41,41 +41,10 @@ namespace Homework_12.Models.Department
         {
             this.id = Guid.NewGuid();
             this.name = Name;
-            this.clients = new List<Client.Client>();            
+            this.clients = new List<Client.ClientAccessInfo>();            
             this.departments = new List<Department>();
-        }        
-
-        /// <summary>
-        /// метод добавления отдела в структуру вышестоящего отдела
-        /// </summary>
-        /// <param name="dep">структура вышестоящего отдела</param>
-        /// <param name="Name">название добавляемого отдела</param>           
-        public void AddDepartment(Department dep, string name)
-        {
-            dep.departments.Add(new Department(name));
-        }        
-
-        /// <summary>
-        /// Методо добавления клиента
-        /// </summary>         
-        public void AddClient(Client.Client client)
-        {
-            clients.Add(client);            
         }
-        /// <summary>
-        /// метод добавления работника в конкретный департамент
-        /// </summary>        
-        public void AddClientToDep(Department dep, Client.Client client)
-        {
-            dep.AddClient(client);
-        }
-
-        public void EditClient()
-        {
-
-        }
-               
-
+        
         #region Свойства
         /// <summary>
         /// Наименование департамента

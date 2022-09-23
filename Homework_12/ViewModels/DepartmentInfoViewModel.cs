@@ -1,16 +1,9 @@
 ﻿using Homework_12.Infrastructure;
 using Homework_12.Infrastructure.Comands;
 using Homework_12.Models.Bank;
-using Homework_12.Models.Client;
 using Homework_12.Models.Department;
-using Homework_12.Models.Worker;
 using Homework_12.ViewModels.Base;
-using Homework_12.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -24,10 +17,8 @@ namespace Homework_12.ViewModels
 
         private Bank bank { get; set; }
 
-        public DepartmentInfoViewModel()
-        {
-            
-        }
+        public DepartmentInfoViewModel(){}
+
         public DepartmentInfoViewModel(Department departmentInfo, Department parentDepartment, MainWindowViewModel mainWindowViewModel, Bank bank)
         {
             this.parentDepartment = parentDepartment;
@@ -49,8 +40,7 @@ namespace Homework_12.ViewModels
         {
             if (departmentInfo is null)
                 return;
-            _nameDepartment = departmentInfo.Name ?? String.Empty;
-            
+            _nameDepartment = departmentInfo.Name ?? String.Empty;            
         }
 
         /// <summary>

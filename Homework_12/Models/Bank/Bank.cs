@@ -1,14 +1,5 @@
 ﻿using Homework_12.Models.Client;
 using Homework_12.Models.Department;
-using Homework_12.Models.Worker;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace Homework_12.Models.Bank
 {
@@ -21,8 +12,7 @@ namespace Homework_12.Models.Bank
 
         private Worker.Worker _worker;
 
-        public Department.Department MainDepartment { get; set; }
-        
+        public Department.Department MainDepartment { get; set; }        
 
         private DepartmentRepository departmentRepository;
 
@@ -37,19 +27,19 @@ namespace Homework_12.Models.Bank
             MainDepartment.departments = departmentRepository.Departments;
         }
 
-        public void AddClient(Department.Department department, Client.Client client)
+        public void AddClient(Department.Department department, ClientAccessInfo client)
         {
             DepartmentRepository.InsertClient(department, client);
         }
 
-        public void EditClient(Client.Client client)
+        public void EditClient(Department.Department department, ClientAccessInfo client)
         {
-            DepartmentRepository.UpdateClient(client);
+            DepartmentRepository.UpdateClient(department, client);
         }
 
-        public void DeleteClient(Client.Client client)
+        public void DeleteClient(Department.Department department, ClientAccessInfo client)
         {
-            DepartmentRepository.DeleteClient(client.Id);
+            DepartmentRepository.DeleteClient(department, client.Id);
         }
 
         public void AddDepartment(Department.Department parentDepartment, Department.Department childDepartment)
@@ -61,7 +51,5 @@ namespace Homework_12.Models.Bank
         {
             DepartmentRepository.DeleteDepartment(MainDepartment, department);
         }
-
-                     
     }
 }
