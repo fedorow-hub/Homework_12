@@ -10,6 +10,9 @@ namespace Homework_12.Models.Bank
         /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// worker
+        /// </summary>
         private Worker.Worker _worker;
 
         public Department.Department MainDepartment { get; set; }        
